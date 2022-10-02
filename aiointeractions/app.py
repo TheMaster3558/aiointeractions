@@ -34,7 +34,7 @@ class InteractionsApp:
             app.cleanup = self._cleanup
 
         self.app = app
-        self.app.add_routes([web.post('/aiointeractions', self.interactions_endpoint)])
+        self.app.add_routes([web.post('/interactions', self.interactions_endpoint)])
 
         self.client = client
 
