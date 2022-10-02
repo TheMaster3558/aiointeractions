@@ -1,6 +1,6 @@
 import asyncio
 from json import loads
-from typing import Any, Mapping, Optional
+from typing import Any, Dict, Mapping, Optional
 
 import discord
 from aiohttp import web
@@ -9,6 +9,9 @@ from nacl.exceptions import BadSignatureError
 
 
 __all__ = ('InteractionsApp',)
+
+
+_PONG_RESPONSE: Dict[str, int] = {'type': discord.InteractionResponseType.pong}
 
 
 class InteractionsApp:
@@ -22,6 +25,7 @@ class InteractionsApp:
         A pre-existing web application to add the aiointeractions route to.
         If not passed, a new web application instance will be created.
     """
+
     def __init__(self, client: discord.Client, *, app: Optional[web.Application] = None) -> None:
         self.verify_key: VerifyKey = discord.utils.MISSING
 
@@ -30,18 +34,16 @@ class InteractionsApp:
             app.cleanup = self._cleanup
 
         self.app = app
-        self.app.add_routes(
-            [
-                web.post('/aiointeractions', self.interactions_endpoint)
-            ]
-        )
+        self.app.add_routes([web.post('/aiointeractions', self.interactions_endpoint)])
 
         self.client = client
 
     def _validate_request(self, headers: Mapping[str, Any], body: str) -> bool:
-        signature = headers['X-Signature-Ed25519']
-        timestamp = headers['X-Signature-Timestamp']
+        signature = headers.get('X-Signature-Ed25519')
+        timestamp = headers.get('X-Signature-Timestamp')
 
+        if not signature or not timestamp:
+            return False
         try:
             self.verify_key.verify(f'{timestamp}{body}'.encode(), bytes.fromhex(signature))
         except BadSignatureError:
@@ -58,11 +60,7 @@ class InteractionsApp:
 
         data = loads(body)
         if data['type'] == discord.InteractionType.ping:
-            return web.json_response(
-                {
-                    'type': discord.InteractionResponseType.pong
-                }
-            )
+            return web.json_response(_PONG_RESPONSE)
 
         self.client._connection.parse_interaction_create(data)
         await asyncio.sleep(3)
