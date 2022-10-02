@@ -31,3 +31,13 @@ keywords = ["discord"]
 
 [tool.setuptools.dynamic]
 version = {attr = "aiointeractions.__version__"}
+
+
+[tool.black]
+line-length = 125
+skip-string-normalization = true
+
+
+[tool.pyright]
+pythonVersion = "3.8"
+typeCheckingMode = "basic"
