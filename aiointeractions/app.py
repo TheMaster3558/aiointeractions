@@ -15,14 +15,14 @@ _PONG_RESPONSE: Dict[str, int] = {'type': discord.InteractionResponseType.pong}
 
 
 class InteractionsApp:
-    """A web application made with `aiohttp` for receiving aiointeractions from Discord.
+    """A web application made with `aiohttp` for receiving interactions from Discord.
 
     Parameters
-    -----------
+    ----------
     client: :class:`discord.Client`
         The discord.py client instance for the web application to use.
     app: Optional[:class:`aiohttp.web.Application`]
-        A pre-existing web application to add the aiointeractions route to.
+        A pre-existing web application to add the `/interactions` route to.
         If not passed, a new web application instance will be created.
     """
 
@@ -68,19 +68,15 @@ class InteractionsApp:
 
     async def start(self, token: str, **kwargs: Any) -> None:
         """
-        Start the web server and call the `login method https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.login`_.
+        Start the web server and call the `login method <https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.login>`_.
 
         Parameters
-        -----------
+        ----------
         token: :class:`str`
             The authentication token.
-        **kwargs:
-            The :term:`keyword argument`s to pass onto `aiohttp.web.run_app https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.run_app`_.
+        \*\*kwargs
+            The keyword arguments to pass onto `aiohttp.web.run_app <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.run_app>`_.
 
-        .. note::
-
-            You can `asyncio.run https://docs.python.org/3/library/asyncio-task.html#asyncio.run`_ to call this method
-            from synchronous context.
 
         .. warning::
 
