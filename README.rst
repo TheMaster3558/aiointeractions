@@ -1,7 +1,7 @@
 aiointeractions
 ===============
 
-An async Discord HTTP Interactions wrapper for `discord.py`.
+An async Discord HTTP Interactions wrapper for `discord.py` built with `aiohttp`.
 
 
 Installing
