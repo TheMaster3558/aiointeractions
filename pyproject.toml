@@ -29,6 +29,10 @@ requires-python = ">=3.8"
 keywords = ["discord"]
 
 
+[project.optional-dependencies]
+docs = ["sphinxawesome_theme"]
+
+
 [tool.setuptools.dynamic]
 version = {attr = "aiointeractions.__version__"}
 
