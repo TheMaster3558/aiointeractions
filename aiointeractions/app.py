@@ -35,6 +35,7 @@ class InteractionsApp:
     """
 
     def __init__(self, client: discord.Client, *, app: Optional[web.Application] = None) -> None:
+        self.client = client
         self.verify_key: VerifyKey = MISSING
 
         if app is None:
@@ -44,7 +45,7 @@ class InteractionsApp:
         app.add_routes([web.post('/interactions', self.interactions_endpoint)])
         self.app = app
 
-        self.client = client
+        self._runner_task: Optional[asyncio.Task[None]] = None
 
     def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:
         signature = headers.get('X-Signature-Ed25519')
@@ -107,4 +108,12 @@ class InteractionsApp:
 
         self.verify_key = VerifyKey(bytes.fromhex(self.client.application.verify_key))
         log.info('Starting web application')
-        await web._run_app(self.app, **kwargs)
+        self._runner_task = asyncio.create_task(web._run_app(self.app, **kwargs))
+        await self._runner_task
+
+    def close(self) -> None:
+        """
+        Close the app. If the app is not running then nothing will happen.
+        """
+        if self._runner_task is not None:
+            self._runner_task.cancel()
