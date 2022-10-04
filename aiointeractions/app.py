@@ -1,5 +1,6 @@
 import asyncio
-from json import loads
+import logging
+import json
 from typing import Any, Dict, Mapping, Optional
 
 import discord
@@ -7,11 +8,18 @@ from aiohttp import web
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 
+from .utils import _separate
+
 
 __all__ = ('InteractionsApp',)
 
 
-_PONG_RESPONSE: Dict[str, int] = {'type': discord.InteractionResponseType.pong}
+log = logging.getLogger('aiointeractions')
+
+MISSING = discord.utils.MISSING
+
+PING: int = discord.InteractionType.ping.value
+PONG: Dict[str, int] = {'type': discord.InteractionResponseType.pong.value}
 
 
 class InteractionsApp:
@@ -27,20 +35,21 @@ class InteractionsApp:
     """
 
     def __init__(self, client: discord.Client, *, app: Optional[web.Application] = None) -> None:
-        self.verify_key: VerifyKey = discord.utils.MISSING
+        self.verify_key: VerifyKey = MISSING
 
         if app is None:
             app = web.Application()
             app.cleanup = self._cleanup
 
+        app.add_routes([web.post('/interactions', self.interactions_endpoint)])
         self.app = app
-        self.app.add_routes([web.post('/interactions', self.interactions_endpoint)])
 
         self.client = client
 
-    def _validate_request(self, headers: Mapping[str, Any], body: str) -> bool:
+    def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:
         signature = headers.get('X-Signature-Ed25519')
         timestamp = headers.get('X-Signature-Timestamp')
+        log.debug('Signature: %s, Timestamp: %s', signature, timestamp)
 
         if not signature or not timestamp:
             return False
@@ -55,18 +64,29 @@ class InteractionsApp:
 
     async def interactions_endpoint(self, request: web.Request) -> web.Response:
         body = await request.text()
-        if not self._validate_request(request.headers, body):
+        log.debug('Received request, verifying...')
+
+        if not self._verify_request(request.headers, body):
+            log.debug('Verification failed, responding with 401.' + _separate())
             return web.Response(status=401)
+        log.debug('Verification success')
 
-        data = loads(body)
-        if data['type'] == discord.InteractionType.ping:
-            return web.json_response(_PONG_RESPONSE)
+        data = json.loads(body)
+        log.debug('Decoded request data: %s', data)
 
+        if data['type'] == PING:
+            return web.json_response(PONG)
+
+        log.debug('Passing interaction data to client instance' + _separate())
         self.client._connection.parse_interaction_create(data)
         await asyncio.sleep(3)
         return web.Response(status=204)
 
-    async def start(self, token: str, **kwargs: Any) -> None:
+    async def start(
+            self,
+            token: str,
+            **kwargs: Any
+    ) -> None:
         """
         Start the web server and call the `login method <https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.login>`_.
 
@@ -86,4 +106,5 @@ class InteractionsApp:
         assert self.client.application is not None
 
         self.verify_key = VerifyKey(bytes.fromhex(self.client.application.verify_key))
+        log.info('Starting web application')
         await web._run_app(self.app, **kwargs)

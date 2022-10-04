@@ -2,7 +2,7 @@ Getting Started
 ===============
 
 Python Requirements
-------------
+-------------------
 Python 3.8 or newer is required.
 
 

@@ -1,4 +1,5 @@
 from .app import InteractionsApp
+from . import utils
 
 
 __all__ = ('InteractionsApp',)
