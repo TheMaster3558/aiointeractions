@@ -8,4 +8,5 @@ An async Discord HTTP Interactions wrapper for `discord.py`.
   :maxdepth: 2
 
   getting_started.rst
+  faq.rst
   api.rst

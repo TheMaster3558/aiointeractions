@@ -30,7 +30,7 @@ class InteractionsApp:
     client: :class:`discord.Client`
         The discord.py client instance for the web application to use.
     app: Optional[:class:`aiohttp.web.Application`]
-        A pre-existing web application to add the `/interactions` route to.
+        A pre-existing web application to add the ``/interactions`` route to.
         If not passed, a new web application instance will be created.
     """
 
