@@ -30,7 +30,7 @@ keywords = ["discord"]
 
 
 [project.optional-dependencies]
-docs = ["sphinxawesome_theme"]
+docs = [".", "sphinxawesome_theme"]
 
 
 [tool.setuptools.dynamic]
