@@ -30,11 +30,12 @@ keywords = ["discord"]
 
 
 [project.optional-dependencies]
-docs = ["discord.py", "sphinxawesome_theme"]
+docs = ["sphinxawesome_theme"]
 
 
 [tool.setuptools.dynamic]
 version = {attr = "aiointeractions.__version__"}
+dependencies = {file = "requirements.txt"}
 
 
 [tool.black]
