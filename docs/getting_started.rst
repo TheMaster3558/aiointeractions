@@ -1,9 +1,18 @@
 Getting Started
 ===============
 
+Python Requirements
+------------
+Python 3.8 or newer is required.
+
+
+Dependencies
+------------
+The only dependency is `discord.py`
+
+
 Installing
 ----------
-`aiointeractions` requires Python 3.8 or newer.
 
 .. code::
 
