@@ -32,9 +32,17 @@ class InteractionsApp:
     app: Optional[:class:`aiohttp.web.Application`]
         A pre-existing web application to add the ``/interactions`` route to.
         If not passed, a new web application instance will be created.
+    route: :class:`str`
+        The route to add the interactions handler to. Defaults to ``/interactions``
     """
 
-    def __init__(self, client: discord.Client, *, app: Optional[web.Application] = None) -> None:
+    def __init__(
+            self,
+            client: discord.Client,
+            *,
+            app: Optional[web.Application] = None,
+            route: str = '/interactions'
+    ) -> None:
         self.client = client
         self.verify_key: VerifyKey = MISSING
 
@@ -42,8 +50,8 @@ class InteractionsApp:
             app = web.Application()
             app.cleanup = self._cleanup
 
-        app.add_routes([web.post('/interactions', self.interactions_endpoint)])
-        self.app = app
+        app.add_routes([web.post(route, self.interactions_handler)])
+        self.app: web.Application = app
 
         self._runner_task: Optional[asyncio.Task[None]] = None
 
@@ -63,7 +71,7 @@ class InteractionsApp:
     async def _cleanup(self) -> None:
         await self.client.close()
 
-    async def interactions_endpoint(self, request: web.Request) -> web.Response:
+    async def interactions_handler(self, request: web.Request) -> web.Response:
         body = await request.text()
         log.debug('Received request, verifying...')
 
