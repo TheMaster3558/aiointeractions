@@ -14,9 +14,9 @@ The only dependency is `discord.py`
 Installing
 ----------
 
-.. code::
+.. code:: shell
 
-    pip install aiointeractions
+    $ pip install aiointeractions
 
 
 Example

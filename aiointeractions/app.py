@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from typing import Any, Dict, Mapping, Optional
 
 import discord
@@ -7,16 +6,16 @@ from aiohttp import web
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 
-from .utils import _loads, _separate
+if discord.utils.HAS_ORJSON:
+    from orjson import loads
+else:
+    from json import loads
 
 
 __all__ = ('InteractionsApp',)
 
 
-log = logging.getLogger('aiointeractions')
-
 MISSING = discord.utils.MISSING
-
 PONG: Dict[str, int] = {'type': 1}  # pong response
 
 
@@ -28,10 +27,10 @@ class InteractionsApp:
     client: :class:`discord.Client`
         The discord.py client instance for the web application to use.
     app: Optional[:class:`aiohttp.web.Application`]
-        A pre-existing web application to add the ``/interactions`` route to.
+        A pre-existing web application to add the interactions route to.
         If not passed, a new web application instance will be created.
     route: :class:`str`
-        The route to add the interactions handler to. Defaults to ``/interactions``
+        The route to add the interactions handler to. Defaults to ``/interactions``.
     """
 
     def __init__(
@@ -56,7 +55,6 @@ class InteractionsApp:
     def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:
         signature = headers.get('X-Signature-Ed25519')
         timestamp = headers.get('X-Signature-Timestamp')
-        log.debug('Signature: %s, Timestamp: %s', signature, timestamp)
 
         if not signature or not timestamp:
             return False
@@ -70,21 +68,17 @@ class InteractionsApp:
         await self.client.close()
 
     async def interactions_handler(self, request: web.Request) -> web.Response:
+        self.client.dispatch('interaction_request', request)
         body = await request.text()
-        log.debug('Received request, verifying...')
 
         if not self._verify_request(request.headers, body):
-            log.debug('Verification failed, responding with 401.' + _separate())
             return web.Response(status=401)
-        log.debug('Verification success')
 
-        data = _loads(body)
-        log.debug('Decoded request data: %s', data)
-
+        self.client.dispatch('verified_interaction_request', request)
+        data = loads(body)
         if data['type'] == 1:  # ping
             return web.json_response(PONG)
 
-        log.debug('Passing interaction data to client instance' + _separate())
         self.client._connection.parse_interaction_create(data)
         await asyncio.sleep(3)
         return web.Response(status=204)
@@ -113,7 +107,6 @@ class InteractionsApp:
         assert self.client.application is not None
 
         self.verify_key = VerifyKey(bytes.fromhex(self.client.application.verify_key))
-        log.info('Starting web application')
         self._runner_task = asyncio.create_task(web._run_app(self.app, **kwargs))
         await self._runner_task
 
