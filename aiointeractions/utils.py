@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Any
 
 import discord.utils
 
@@ -50,3 +50,9 @@ def setup_logging(
 
 def _separate() -> str:
     return '\n' + '-' * 200
+
+
+if discord.utils.HAS_ORJSON:
+    from orjson import loads as _loads
+else:
+    from json import loads as _loads

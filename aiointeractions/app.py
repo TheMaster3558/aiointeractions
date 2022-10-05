@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import json
 from typing import Any, Dict, Mapping, Optional
 
 import discord
@@ -8,7 +7,7 @@ from aiohttp import web
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 
-from .utils import _separate
+from .utils import _loads, _separate
 
 
 __all__ = ('InteractionsApp',)
@@ -18,8 +17,7 @@ log = logging.getLogger('aiointeractions')
 
 MISSING = discord.utils.MISSING
 
-PING: int = discord.InteractionType.ping.value
-PONG: Dict[str, int] = {'type': discord.InteractionResponseType.pong.value}
+PONG: Dict[str, int] = {'type': 1}  # pong response
 
 
 class InteractionsApp:
@@ -80,10 +78,10 @@ class InteractionsApp:
             return web.Response(status=401)
         log.debug('Verification success')
 
-        data = json.loads(body)
+        data = _loads(body)
         log.debug('Decoded request data: %s', data)
 
-        if data['type'] == PING:
+        if data['type'] == 1:  # ping
             return web.json_response(PONG)
 
         log.debug('Passing interaction data to client instance' + _separate())
