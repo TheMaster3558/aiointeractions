@@ -45,7 +45,6 @@ class InteractionsApp:
 
         if app is None:
             app = web.Application()
-            app.cleanup = self._cleanup
 
         app.add_routes([web.post(route, self.interactions_handler)])
         self.app: web.Application = app
@@ -64,12 +63,9 @@ class InteractionsApp:
             return False
         return True
 
-    async def _cleanup(self) -> None:
-        await self.client.close()
-
     async def interactions_handler(self, request: web.Request) -> web.Response:
         self.client.dispatch('interaction_request', request)
-        await asyncio.sleep(0)  # ensure that the event is called before it is verified        
+        await asyncio.sleep(0)
         body = await request.text()
 
         if not self._verify_request(request.headers, body):
