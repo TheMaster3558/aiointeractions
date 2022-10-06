@@ -4,6 +4,11 @@ aiointeractions
 An async Discord HTTP Interactions wrapper for `discord.py` built with `aiohttp`.
 
 
+Documentation
+-------------
+https://aiointeractions.readthedocs.io/
+
+
 Installing
 ----------
 `aiointeractions` requires Python 3.8 or newer.
