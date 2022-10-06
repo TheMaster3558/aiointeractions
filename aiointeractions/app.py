@@ -31,6 +31,9 @@ class InteractionsApp:
         If not passed, a new web application instance will be created.
     route: :class:`str`
         The route to add the interactions handler to. Defaults to ``/interactions``.
+
+
+    .. note:: You can use ``discord.utils.setup_logging()`` for basic logging.
     """
 
     def __init__(
