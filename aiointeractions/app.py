@@ -33,7 +33,10 @@ class InteractionsApp:
         The route to add the interactions handler to. Defaults to ``/interactions``.
 
 
-    .. note:: You can use ``discord.utils.setup_logging()`` for basic logging.
+    .. note::
+
+        You can use ``discord.utils.setup_logging()`` for basic logging.
+        Use ``discord.utils.setup+logging(root=True`` for `aiohttp.web` logging.
     """
 
     def __init__(

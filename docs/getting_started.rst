@@ -35,7 +35,7 @@ Example
     tree = discord.app_commands.CommandTree(client)
     app = aiointeractions.InteractionsApp(client)
 
-    discord.utils.setup_logging()
+    discord.utils.setup_logging(root=True)
 
     @tree.command()
     async def ping(interaction: discord.Interaction) -> None:
