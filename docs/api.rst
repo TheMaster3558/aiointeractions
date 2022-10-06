@@ -17,6 +17,8 @@ You can listen to the following events on your client instance.
     :param request: The request object.
     :type request: `aiohttp.web.Request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
 
+    .. note:: The request may not be an interaction, it may be a ping from Discord.
+
 
 .. function:: on_verified_interaction_request(request)
 
