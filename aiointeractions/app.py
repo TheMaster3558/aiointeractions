@@ -65,7 +65,6 @@ class InteractionsApp:
 
     async def interactions_handler(self, request: web.Request) -> web.Response:
         self.client.dispatch('interaction_request', request)
-        await asyncio.sleep(0)
         body = await request.text()
 
         if not self._verify_request(request.headers, body):
