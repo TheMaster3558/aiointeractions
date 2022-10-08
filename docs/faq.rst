@@ -19,7 +19,7 @@ How do I set the interactions endpoint?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1. Open the Discord Developer Portal.
 2. Navigate to the **General Information** page in your chosen application.
-3. Now find **Interactions Endpoint URL** and set the url. Make sure it ends with ``/interactions``.
+3. Now find **Interactions Endpoint URL** and set the url.
 
 Why isn't ``on_ready`` firing?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
