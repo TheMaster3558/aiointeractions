@@ -40,11 +40,7 @@ class InteractionsApp:
     """
 
     def __init__(
-            self,
-            client: discord.Client,
-            *,
-            app: Optional[web.Application] = None,
-            route: str = '/interactions'
+        self, client: discord.Client, *, app: Optional[web.Application] = None, route: str = '/interactions'
     ) -> None:
         self.client = client
         self.verify_key: VerifyKey = MISSING
@@ -85,11 +81,7 @@ class InteractionsApp:
         await asyncio.sleep(3)
         return web.Response(status=204)
 
-    async def start(
-            self,
-            token: str,
-            **kwargs: Any
-    ) -> None:
+    async def start(self, token: str, **kwargs: Any) -> None:
         """
         Start the web server and call the `login method <https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.login>`_.
 
