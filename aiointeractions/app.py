@@ -109,7 +109,7 @@ class InteractionsApp:
         assert self.client.application is not None
 
         self.verify_key = VerifyKey(bytes.fromhex(self.client.application.verify_key))
-        self._runner_task = asyncio.create_task(web._run_app(self.app, **kwargs))
+        self._runner_task = self.client.loop.create_task(web._run_app(self.app, **kwargs))
         await self._runner_task
 
     def close(self) -> None:
