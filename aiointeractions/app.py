@@ -39,7 +39,6 @@ else:
 __all__ = ('InteractionsApp',)
 
 
-MISSING = discord.utils.MISSING
 PONG: Dict[str, int] = {'type': 1}  # pong response
 
 
@@ -67,15 +66,13 @@ class InteractionsApp:
         self, client: discord.Client, *, app: Optional[web.Application] = None, route: str = '/interactions'
     ) -> None:
         self.client = client
-        self.verify_key: VerifyKey = MISSING
+        self.verify_key: VerifyKey = discord.utils.MISSING
 
         if app is None:
             app = web.Application()
 
         app.add_routes([web.post(route, self.interactions_handler)])
         self.app: web.Application = app
-
-        self._runner_task: Optional[asyncio.Task[None]] = None
 
     def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:
         signature = headers.get('X-Signature-Ed25519')
@@ -125,12 +122,4 @@ class InteractionsApp:
         assert self.client.application is not None
 
         self.verify_key = VerifyKey(bytes.fromhex(self.client.application.verify_key))
-        self._runner_task = self.client.loop.create_task(web._run_app(self.app, **kwargs))
-        await self._runner_task
-
-    def close(self) -> None:
-        """
-        Close the app. If the app is not running then nothing will happen.
-        """
-        if self._runner_task is not None:
-            self._runner_task.cancel()
+        await web._run_app(self.app, **kwargs)
