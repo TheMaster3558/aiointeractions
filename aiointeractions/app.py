@@ -39,7 +39,6 @@ else:
 __all__ = ('InteractionsApp',)
 
 
-MISSING = discord.utils.MISSING
 PONG: Dict[str, int] = {'type': 1}  # pong response
 
 
@@ -64,10 +63,16 @@ class InteractionsApp:
     """
 
     def __init__(
-        self, client: discord.Client, *, app: Optional[web.Application] = None, route: str = '/interactions'
+        self,
+        client: discord.Client,
+        *,
+        app: Optional[web.Application] = None,
+        route: str = '/interactions',
+        success_response: Optional[str] = None,
+        forbidden_response: Optional[str] = None,
     ) -> None:
         self.client = client
-        self.verify_key: VerifyKey = MISSING
+        self.verify_key: VerifyKey = discord.utils.MISSING
 
         if app is None:
             app = web.Application()
@@ -75,7 +80,9 @@ class InteractionsApp:
         app.add_routes([web.post(route, self.interactions_handler)])
         self.app: web.Application = app
 
-        self._runner_task: Optional[asyncio.Task[None]] = None
+        self.success_code = 204 if success_response is None else 200
+        self.success_response = success_response
+        self.forbidden_response = forbidden_response
 
     def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:
         signature = headers.get('X-Signature-Ed25519')
@@ -94,7 +101,7 @@ class InteractionsApp:
         body = await request.text()
 
         if not self._verify_request(request.headers, body):
-            return web.Response(status=401)
+            return web.Response(status=401, body=self.success_response)
 
         self.client.dispatch('verified_interaction_request', request)
         data = loads(body)
@@ -103,7 +110,7 @@ class InteractionsApp:
 
         self.client._connection.parse_interaction_create(data)
         await asyncio.sleep(3)
-        return web.Response(status=204)
+        return web.Response(status=self.success_code, body=self.success_response)
 
     async def start(self, token: str, **kwargs: Any) -> None:
         """
@@ -125,12 +132,4 @@ class InteractionsApp:
         assert self.client.application is not None
 
         self.verify_key = VerifyKey(bytes.fromhex(self.client.application.verify_key))
-        self._runner_task = self.client.loop.create_task(web._run_app(self.app, **kwargs))
-        await self._runner_task
-
-    def close(self) -> None:
-        """
-        Close the app. If the app is not running then nothing will happen.
-        """
-        if self._runner_task is not None:
-            self._runner_task.cancel()
+        await web._run_app(self.app, **kwargs)
