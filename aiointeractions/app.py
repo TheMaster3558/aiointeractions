@@ -31,9 +31,9 @@ from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 
 if discord.utils.HAS_ORJSON:
-    from orjson import loads
+    from orjson import dumps, loads
 else:
-    from json import loads
+    from json import dumps, loads
 
 
 __all__ = ('InteractionsApp',)
@@ -54,6 +54,16 @@ class InteractionsApp:
         If not passed, a new web application instance will be created.
     route: :class:`str`
         The route to add the interactions handler to. Defaults to ``/interactions``.
+    success_response: Optional[:class:`str`]
+        The data to return to a successful request.
+    forbidden_response: Optional[:class:`str`]
+        The data to return to a request that failed verification.
+
+
+    .. warning::
+
+        If `success_response` or `forbbiden_response` are meant to be a JSON response, make sure to
+        serialize the object to JSON format with `json.dumps <https://docs.python.org/3/library/json.html#json.dumps>`_.
 
 
     .. note::
@@ -106,7 +116,7 @@ class InteractionsApp:
         self.client.dispatch('verified_interaction_request', request)
         data = loads(body)
         if data['type'] == 1:  # ping
-            return web.json_response(PONG)
+            return web.Response(body=dumps(PONG))
 
         self.client._connection.parse_interaction_create(data)
         await asyncio.sleep(3)
