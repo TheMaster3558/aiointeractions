@@ -23,7 +23,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import asyncio
-from typing import Any, Dict, Mapping, Optional
+from typing import Any, Dict, Mapping, Optional, Set
 
 import discord
 from aiohttp import web
@@ -40,6 +40,12 @@ __all__ = ('InteractionsApp',)
 
 
 PONG: Dict[str, int] = {'type': 1}  # pong response
+
+
+def get_latest_task(before_tasks: Set[asyncio.Task[Any]]) -> asyncio.Task[None]:
+    return list(asyncio.all_tasks() - before_tasks)[0]
+    # guaranteed to be expected task because there are no awaits
+    # inbetween calling this function and the all tasks get
 
 
 class InteractionsApp:
@@ -118,8 +124,10 @@ class InteractionsApp:
         if data['type'] == 1:  # ping
             return web.Response(body=dumps(PONG))
 
+        tasks = asyncio.all_tasks()
         self.client._connection.parse_interaction_create(data)
-        await asyncio.sleep(3)
+        await get_latest_task(tasks)
+
         return web.Response(status=self.success_code, body=self.success_response)
 
     async def start(self, token: str, **kwargs: Any) -> None:
