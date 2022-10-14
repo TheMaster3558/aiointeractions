@@ -111,7 +111,7 @@ class InteractionsApp:
         body = await request.text()
 
         if not self._verify_request(request.headers, body):
-            return web.Response(status=401, body=self.success_response)
+            return web.Response(status=401, body=self.forbidden_response)
 
         self.client.dispatch('verified_interaction_request', request)
         data = loads(body)
