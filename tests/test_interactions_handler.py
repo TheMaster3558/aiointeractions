@@ -7,11 +7,7 @@ import discord
 
 
 class MockRequest:
-    def __init__(
-            self,
-            headers: Mapping[str, Any],
-            data: Any
-    ):
+    def __init__(self, headers: Mapping[str, Any], data: Any):
         self.headers = headers
         self._data = data
 
