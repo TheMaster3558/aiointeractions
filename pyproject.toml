@@ -46,3 +46,8 @@ skip-string-normalization = true
 [tool.pyright]
 pythonVersion = "3.8"
 typeCheckingMode = "basic"
+
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+filterwarnings = ["ignore::DeprecationWarning"]

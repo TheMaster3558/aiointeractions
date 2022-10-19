@@ -96,7 +96,6 @@ class InteractionsApp:
         app.add_routes([web.post(route, self.interactions_handler)])
         self.app: web.Application = app
 
-        self.success_code = 204 if success_response is None else 200
         self.success_response = success_response
         self.forbidden_response = forbidden_response
 
@@ -128,7 +127,7 @@ class InteractionsApp:
         self.client._connection.parse_interaction_create(data)
         await get_latest_task(tasks)
 
-        return web.Response(status=self.success_code, body=self.success_response)
+        return web.Response(status=200, body=self.success_response)
 
     async def start(self, token: str, **kwargs: Any) -> None:
         """
