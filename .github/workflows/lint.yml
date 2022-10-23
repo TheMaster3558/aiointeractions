@@ -1,0 +1,30 @@
+name: lint
+
+on: [push, pull_request]
+
+jobs:
+  check:
+    name: Check
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        id: install-deps
+        run: |
+          python -m pip install --upgrade pip setuptools wheel black requests
+          pip install -U -r requirements.txt
+
+      - name: Setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Run Black
+        run: |
+          black --check .      
+
+      - name: Run Pyright
+        uses: jakebailey/pyright-action@v1
