@@ -40,7 +40,7 @@ else:
 __all__ = ('InteractionsApp',)
 
 
-NoneFunction: Callable[[Any], None] = lambda r: None
+none_function: Callable[[Any], None] = lambda r: None
 PONG: Dict[str, int] = {'type': 1}  # pong response
 
 
@@ -102,8 +102,8 @@ class InteractionsApp:
         app.add_routes([web.post(route, self.interactions_handler)])
         self.app: web.Application = app
 
-        self.success_response = success_response or NoneFunction
-        self.forbidden_response = forbidden_response or NoneFunction
+        self.success_response = success_response or none_function
+        self.forbidden_response = forbidden_response or none_function
 
     def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:
         signature = headers.get('X-Signature-Ed25519')
