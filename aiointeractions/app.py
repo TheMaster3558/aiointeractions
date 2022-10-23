@@ -74,7 +74,7 @@ class InteractionsApp:
 
     .. warning::
 
-        If the return value of `success_response` or `forbbiden_response` are meant to be a JSON response, make sure to
+        If the return value of `success_response` or `forbidden_response` are meant to be a JSON response, make sure to
         serialize the object to JSON format with `json.dumps <https://docs.python.org/3/library/json.html#json.dumps>`_.
 
 
