@@ -24,8 +24,7 @@ DEALINGS IN THE SOFTWARE.
 from __future__ import annotations
 
 import asyncio
-import inspect
-from typing import Any, Awaitable, Callable, Dict, Mapping, Optional, Set, Union
+from typing import Any, Callable, Dict, Mapping, Optional, Set
 
 import discord
 from aiohttp import web
@@ -41,6 +40,7 @@ else:
 __all__ = ('InteractionsApp',)
 
 
+NoneFunction: Callable[[Any], None] = lambda r: None
 PONG: Dict[str, int] = {'type': 1}  # pong response
 
 
@@ -74,7 +74,7 @@ class InteractionsApp:
 
     .. warning::
 
-        If thre return value of `success_response` or `forbbiden_response` are meant to be a JSON response, make sure to
+        If the return value of `success_response` or `forbbiden_response` are meant to be a JSON response, make sure to
         serialize the object to JSON format with `json.dumps <https://docs.python.org/3/library/json.html#json.dumps>`_.
 
 
@@ -102,8 +102,8 @@ class InteractionsApp:
         app.add_routes([web.post(route, self.interactions_handler)])
         self.app: web.Application = app
 
-        self.success_response = success_response
-        self.forbidden_response = forbidden_response
+        self.success_response = success_response or NoneFunction
+        self.forbidden_response = forbidden_response or NoneFunction
 
     def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:
         signature = headers.get('X-Signature-Ed25519')
@@ -122,7 +122,7 @@ class InteractionsApp:
         body = await request.text()
 
         if not self._verify_request(request.headers, body):
-            response = await discord.utils.maybe_coroutine(self.forbidden_response)
+            response = await discord.utils.maybe_coroutine(self.forbidden_response, request)
             return web.Response(status=401, body=response)
 
         self.client.dispatch('verified_interaction_request', request)
@@ -134,7 +134,7 @@ class InteractionsApp:
         self.client._connection.parse_interaction_create(data)
         await get_latest_task(tasks)
 
-        response = await discord.utils.maybe_coroutine(self.success_response)
+        response = await discord.utils.maybe_coroutine(self.success_response, request)
         return web.Response(status=200, body=response)
 
     async def start(self, token: str, **kwargs: Any) -> None:
