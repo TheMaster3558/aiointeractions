@@ -34,6 +34,11 @@ docs = ["sphinxawesome_theme"]
 tests = ["pytest", "pytest-asyncio"]
 
 
+[project.urls]
+Homepage = "http://github.com/TheMaster3558/aiointeractions"
+Documentation = "http://aiointeractions.readthedocs.io/"
+
+
 [tool.setuptools.dynamic]
 version = {attr = "aiointeractions.__version__"}
 dependencies = {file = "requirements.txt"}

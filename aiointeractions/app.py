@@ -24,7 +24,8 @@ DEALINGS IN THE SOFTWARE.
 from __future__ import annotations
 
 import asyncio
-from typing import Any, Dict, Mapping, Optional, Set
+import inspect
+from typing import Any, Awaitable, Callable, Dict, Mapping, Optional, Set, Union
 
 import discord
 from aiohttp import web
@@ -61,15 +62,19 @@ class InteractionsApp:
         If not passed, a new web application instance will be created.
     route: :class:`str`
         The route to add the interactions handler to. Defaults to ``/interactions``.
-    success_response: Optional[:class:`str`]
-        The data to return to a successful request.
-    forbidden_response: Optional[:class:`str`]
-        The data to return to a request that failed verification.
+    success_response: Optional[Callable[[:class:`web.Request`], Any]
+        A function (synchronous or asynchronous ) that accepts 1 argument,
+        `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
+        that would return the data for the response.
+    forbidden_response: Optional[Callable[[:class:`web.Request`], Any]
+        A function (synchronous or asynchronous ) that accepts 1 argument,
+        `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
+        that would return the data for the response.
 
 
     .. warning::
 
-        If `success_response` or `forbbiden_response` are meant to be a JSON response, make sure to
+        If thre return value of `success_response` or `forbbiden_response` are meant to be a JSON response, make sure to
         serialize the object to JSON format with `json.dumps <https://docs.python.org/3/library/json.html#json.dumps>`_.
 
 
@@ -85,8 +90,8 @@ class InteractionsApp:
         *,
         app: Optional[web.Application] = None,
         route: str = '/interactions',
-        success_response: Optional[str] = None,
-        forbidden_response: Optional[str] = None,
+        success_response: Optional[Callable[[web.Request], Any]] = None,
+        forbidden_response: Optional[Callable[[web.Request], Any]] = None,
     ) -> None:
         self.client = client
         self.verify_key: VerifyKey = discord.utils.MISSING
@@ -117,7 +122,8 @@ class InteractionsApp:
         body = await request.text()
 
         if not self._verify_request(request.headers, body):
-            return web.Response(status=401, body=self.forbidden_response)
+            response = await discord.utils.maybe_coroutine(self.forbidden_response)
+            return web.Response(status=401, body=response)
 
         self.client.dispatch('verified_interaction_request', request)
         data = loads(body)
@@ -128,7 +134,8 @@ class InteractionsApp:
         self.client._connection.parse_interaction_create(data)
         await get_latest_task(tasks)
 
-        return web.Response(status=200, body=self.success_response)
+        response = await discord.utils.maybe_coroutine(self.success_response)
+        return web.Response(status=200, body=response)
 
     async def start(self, token: str, **kwargs: Any) -> None:
         """
