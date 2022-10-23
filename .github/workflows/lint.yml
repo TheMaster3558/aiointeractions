@@ -5,6 +5,8 @@ on: [push, pull_request]
 jobs:
   check:
     name: Check
+    runs-on: ubuntu-latest
+
     steps:
       - name: Set up Python
         uses: actions/setup-python@v4
