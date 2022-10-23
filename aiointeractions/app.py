@@ -81,7 +81,7 @@ class InteractionsApp:
     .. note::
 
         You can use `discord.utils.setup_logging() <https://discordpy.readthedocs.io/en/stable/api.html#discord.utils.setup_logging>`_
-        for basic logging. Use ``discord.utils.setup_logging(root=False)`` to disable `aiohttp` logging.
+        for basic logging. Use ``discord.utils.setup_logging(root=False)`` to disable logging for `aiohttp`.
     """
 
     def __init__(
