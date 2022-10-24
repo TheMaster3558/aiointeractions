@@ -31,9 +31,9 @@ from aiohttp import web
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 
-if discord.utils.HAS_ORJSON:
+try:
     from orjson import dumps, loads
-else:
+except ModuleNotFoundError:
     from json import dumps, loads
 
 
