@@ -65,11 +65,11 @@ class InteractionsApp:
     success_response: Optional[Callable[[:class:`web.Request`], Any]
         A function (synchronous or asynchronous ) that accepts 1 argument,
         `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
-        that would return the data for the response.
+        that would return the body for the response.
     forbidden_response: Optional[Callable[[:class:`web.Request`], Any]
         A function (synchronous or asynchronous ) that accepts 1 argument,
         `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
-        that would return the data for the response.
+        that would return the body for the response.
 
 
     .. warning::
