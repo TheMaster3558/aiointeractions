@@ -22,6 +22,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel black requests
           pip install -U -r requirements.txt
+          pip install .[tests]
+          pip install discord.py[speed]
 
       - name: Setup node.js
         uses: actions/setup-node@v3
