@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aiointeractions"
-dynamic = ["version", "dependencies"]
+dynamic = ["version"]
 description = "An async Discord HTTP Interactions wrapper for discord.py."
 readme = "README.rst"
 authors = [{name = "The Master"}]
@@ -45,7 +45,6 @@ Documentation = "http://aiointeractions.readthedocs.io/"
 
 [tool.setuptools.dynamic]
 version = {attr = "aiointeractions.__version__"}
-dependencies = {file = "requirements.txt"}
 
 
 [tool.black]
