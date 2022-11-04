@@ -100,9 +100,8 @@ class InteractionsApp:
             app = web.Application()
 
         app.add_routes([web.post(route, self.interactions_handler)])
-
-        self.__old_startup: Callable[[], Any] = app.on_startup
-        self.__old_cleanup: Callable[[], Any] = app.on_cleanup
+        app.on_startup.append(self._set_running)
+        app.on_shutdown.append(self._set_running)
         self.app: web.Application = app
 
         self.success_response = success_response or none_function
@@ -110,13 +109,8 @@ class InteractionsApp:
 
         self._running: bool = False
 
-    async def _on_startup(self) -> Any:
-        self._running = True
-        return await self.__old_startup()
-
-    async def _on_cleanup(self) -> Any:
-        self._running = False
-        return await self.__old_cleanup()
+    async def _set_running(self, _: Any) -> None:
+        self._running = not self._running
 
     def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:
         signature = headers.get('X-Signature-Ed25519')
