@@ -100,23 +100,23 @@ class InteractionsApp:
             app = web.Application()
 
         app.add_routes([web.post(route, self.interactions_handler)])
-        
+
         self.__old_startup: Callable[[], Any] = app.on_startup
         self.__old_cleanup: Callable[[], Any] = app.on_cleanup
         self.app: web.Application = app
 
         self.success_response = success_response or none_function
         self.forbidden_response = forbidden_response or none_function
-        
+
         self._running: bool = False
-        
+
     async def _on_startup(self) -> Any:
         self._running = True
-        return await self._old_startup()
-    
+        return await self.__old_startup()
+
     async def _on_cleanup(self) -> Any:
         self._running = False
-        return await self._old_cleanup()
+        return await self.__old_cleanup()
 
     def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:
         signature = headers.get('X-Signature-Ed25519')
@@ -129,13 +129,13 @@ class InteractionsApp:
         except BadSignatureError:
             return False
         return True
-    
+
     def is_running(self) -> bool:
         """
         Returns
         -------
         Return ``True`` if the app is running, ``False`` if it is not.
-        
+
         Return Type
         -----------
         :class:`bool`
