@@ -130,6 +130,7 @@ class InteractionsApp:
         -------
         Return ``True`` if the app is running, ``False`` if it is not.
 
+
         Return Type
         -----------
         :class:`bool`
