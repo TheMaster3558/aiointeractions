@@ -128,12 +128,7 @@ class InteractionsApp:
         """
         Returns
         -------
-        Return ``True`` if the app is running, ``False`` if it is not.
-
-
-        Return Type
-        -----------
-        :class:`bool`
+        ``True`` if the app is running, otherwise ``False``.
         """
         return self._running
 
