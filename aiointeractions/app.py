@@ -129,8 +129,8 @@ class InteractionsApp:
         Returns
         -------
         ``True`` if the app is running, otherwise ``False``.
-        
-        
+
+
         .. versionadded:: 1.1
         """
         return self._running
