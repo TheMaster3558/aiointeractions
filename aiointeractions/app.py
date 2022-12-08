@@ -90,8 +90,8 @@ class InteractionsApp:
         *,
         app: Optional[web.Application] = None,
         route: str = '/interactions',
-        success_response: Optional[Callable[[web.Request], Any]] = None,
-        forbidden_response: Optional[Callable[[web.Request], Any]] = None,
+        success_response: Callable[[web.Request], Any] = none_function,
+        forbidden_response: Callable[[web.Request], Any] = none_function,
     ) -> None:
         self.client = client
         self.verify_key: VerifyKey = discord.utils.MISSING
@@ -104,8 +104,8 @@ class InteractionsApp:
         app.on_shutdown.append(self._set_running)
         self.app: web.Application = app
 
-        self.success_response = success_response or none_function
-        self.forbidden_response = forbidden_response or none_function
+        self.success_response = success_response
+        self.forbidden_response = forbidden_response
 
         self._running: bool = False
 
