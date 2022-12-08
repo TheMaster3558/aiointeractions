@@ -93,7 +93,7 @@ class InteractionsApp:
         success_response: Callable[[web.Request], Any] = none_function,
         forbidden_response: Callable[[web.Request], Any] = none_function,
     ) -> None:
-        self.client = client
+        self.client: discord.Client = client
         self.verify_key: VerifyKey = discord.utils.MISSING
 
         if app is None:
@@ -104,8 +104,8 @@ class InteractionsApp:
         app.on_shutdown.append(self._set_running)
         self.app: web.Application = app
 
-        self.success_response = success_response
-        self.forbidden_response = forbidden_response
+        self.success_response: Callable[[web.Request], Any] = success_response
+        self.forbidden_response: Callable[[web.Request], Any] = forbidden_response
 
         self._running: bool = False
 
