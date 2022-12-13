@@ -45,7 +45,7 @@ PONG: Dict[str, int] = {'type': 1}  # pong response
 
 
 def get_latest_task(before_tasks: Set[asyncio.Task[Any]]) -> asyncio.Task[None]:
-    return list(asyncio.all_tasks() - before_tasks)[0]
+    return (asyncio.all_tasks() - before_tasks).pop()
     # guaranteed to be expected task because there are no awaits
     # inbetween calling this function and the all tasks get
 
