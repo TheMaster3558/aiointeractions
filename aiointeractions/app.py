@@ -146,7 +146,7 @@ class InteractionsApp:
     def _handle_unauthorized_request(self, body: Any) -> web.Response:
         if self.raise_for_bad_response:
             raise web.HTTPUnauthorized(body=body)
-        return web.Response(status=403, body=body)
+        return web.Response(status=401, body=body)
 
     async def interactions_handler(self, request: web.Request) -> web.Response:
         self.client.dispatch('interaction_request', request)
