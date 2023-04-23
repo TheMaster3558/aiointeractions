@@ -1,9 +1,9 @@
 from typing import Any, Mapping
 
+import discord
 import pytest
 
 import aiointeractions
-import discord
 
 
 class MockRequest:

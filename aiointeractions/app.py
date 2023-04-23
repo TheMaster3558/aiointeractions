@@ -28,8 +28,8 @@ from typing import Any, Callable, Dict, Mapping, Optional, Set
 
 import discord
 from aiohttp import web
-from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
+from nacl.signing import VerifyKey
 
 if discord.utils.HAS_ORJSON:
     from orjson import dumps, loads
@@ -44,7 +44,7 @@ none_function: Callable[[Any], None] = lambda r: None
 PONG: Dict[str, int] = {'type': 1}  # pong response
 
 
-def get_latest_task(before_tasks: Set[asyncio.Task[Any]]) -> asyncio.Task[None]:
+def get_latest_task(before_tasks: Set[asyncio.Task[Any]]) -> asyncio.Task[Any]:
     return (asyncio.all_tasks() - before_tasks).pop()
     # guaranteed to be expected task because there are no awaits
     # inbetween calling this function and the all tasks get
@@ -70,6 +70,12 @@ class InteractionsApp:
         A function (synchronous or asynchronous) that accepts 1 argument,
         `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
         that would return the body for the response.
+    raise_for_bad_response: :class:`bool`
+        Raises `aiohttp.web.HTTPException <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.HTTPException>`_
+        on a bad request, otherwise returns `aiohttp.web.Response <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Response>`_
+        This parameter will always be ``True`` starting from v2.
+
+        .. versionadded:: 1.2
 
 
     .. warning::
@@ -92,6 +98,7 @@ class InteractionsApp:
         route: str = '/interactions',
         success_response: Callable[[web.Request], Any] = none_function,
         forbidden_response: Callable[[web.Request], Any] = none_function,
+        raise_for_bad_response: bool = False,
     ) -> None:
         self.client: discord.Client = client
         self.verify_key: VerifyKey = discord.utils.MISSING
@@ -106,6 +113,7 @@ class InteractionsApp:
 
         self.success_response: Callable[[web.Request], Any] = success_response
         self.forbidden_response: Callable[[web.Request], Any] = forbidden_response
+        self.raise_for_bad_response: bool = raise_for_bad_response
 
         self._running: bool = False
 
@@ -135,13 +143,18 @@ class InteractionsApp:
         """
         return self._running
 
+    def _handle_unauthorized_request(self, body: Any) -> web.Response:
+        if self.raise_for_bad_response:
+            raise web.HTTPUnauthorized(body=body)
+        return web.Response(status=403, body=body)
+
     async def interactions_handler(self, request: web.Request) -> web.Response:
         self.client.dispatch('interaction_request', request)
         body = await request.text()
 
         if not self._verify_request(request.headers, body):
             response = await discord.utils.maybe_coroutine(self.forbidden_response, request)
-            return web.Response(status=401, body=response)
+            return self._handle_unauthorized_request(body)
 
         self.client.dispatch('verified_interaction_request', request)
         data = loads(body)
