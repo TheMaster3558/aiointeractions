@@ -69,7 +69,8 @@ class InteractionsApp:
     Parameters
     ----------
     client: :class:`discord.Client`
-        The discord.py client instance for the web application to use.
+        The discord.py client instance for the web application to use. This can be :class:`discord.Client`
+        or any subclass of it such as :class:`discord.ext.commands.Bot`
     app: Optional[:class:`aiohttp.web.Application`]
         A pre-existing web application to add the interactions route to.
         If not passed, a new web application instance will be created.
