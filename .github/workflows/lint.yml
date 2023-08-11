@@ -20,10 +20,8 @@ jobs:
       - name: Install dependencies
         id: install-deps
         run: |
-          python -m pip install --upgrade pip setuptools wheel black requests
-          pip install -U -r requirements.txt
-          pip install .[tests]
-          pip install discord.py[speed]
+          python -m pip install --upgrade pip setuptools wheel black
+          python -m pip install -U -r requirements.txt
 
       - name: Setup node.js
         uses: actions/setup-node@v3

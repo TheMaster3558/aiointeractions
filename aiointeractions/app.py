@@ -40,7 +40,20 @@ else:
 __all__ = ('InteractionsApp',)
 
 
-none_function: Callable[[Any], None] = lambda r: None
+# create a prettier repr for the docs, <function <lambda>> -> <do_nothing>
+try:
+    if __sphinx_build__:  # type: ignore # defined in docs/conf.py
+
+        class DoNothing:
+            def __repr__(self) -> str:
+                return "<do_nothing>"
+
+        none_function = DoNothing()  # type: ignore
+    else:
+        none_function: Callable[[Any], None] = lambda r: None
+except NameError:
+    none_function: Callable[[Any], None] = lambda r: None
+
 PONG: Dict[str, int] = {'type': 1}  # pong response
 
 
@@ -65,11 +78,11 @@ class InteractionsApp:
     success_response: Callable[[web.Request], Any]
         A function (synchronous or asynchronous) that accepts 1 argument,
         `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
-        that would return the body for the response.
+        that would return the body for the response. Defaults to a function that would do nothing.
     forbidden_response: Callable[[web.Request], Any]
         A function (synchronous or asynchronous) that accepts 1 argument,
         `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
-        that would return the body for the response.
+        that would return the body for the response. Defaults to a function that would do nothing.
     raise_for_bad_response: :class:`bool`
         Raises `aiohttp.web.HTTPException <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.HTTPException>`_
         on a bad request, otherwise returns `aiohttp.web.Response <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Response>`_
