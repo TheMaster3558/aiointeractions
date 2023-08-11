@@ -7,6 +7,8 @@ API Reference
 
 Event Reference
 ~~~~~~~~~~~~~~~
+.. currentmodule:: None
+
 You can listen to the following events on your client instance.
 
 .. function:: on_interaction_request(request)
