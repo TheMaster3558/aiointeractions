@@ -168,7 +168,7 @@ class InteractionsApp:
 
         if not self._verify_request(request.headers, body):
             response = await discord.utils.maybe_coroutine(self.forbidden_response, request)
-            return self._handle_unauthorized_request(body)
+            return self._handle_unauthorized_request(response)
 
         self.client.dispatch('verified_interaction_request', request)
         data = loads(body)
