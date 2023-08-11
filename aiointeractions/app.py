@@ -85,8 +85,8 @@ class InteractionsApp:
         `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
         that would return the body for the response. Defaults to a function that would do nothing.
     raise_for_bad_response: :class:`bool`
-        Raises `aiohttp.web.HTTPException <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.HTTPException>`_
-        on a bad request, otherwise returns `aiohttp.web.Response <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Response>`_
+        Whether to raise `aiohttp.web.HTTPException <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.HTTPException>`_
+        on a bad request, if ``False`` returns `aiohttp.web.Response <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Response>`_
         This parameter will always be ``True`` starting from v2.
 
         .. versionadded:: 1.2
