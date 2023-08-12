@@ -182,6 +182,9 @@ class InteractionsApp:
         response = await discord.utils.maybe_coroutine(self.success_response, request)
         return web.Response(status=200, body=response)
 
+    def _set_verify_key(self, verify_key: str) -> None:
+        self.verify_key = VerifyKey(bytes.fromhex(verify_key))
+
     async def start(self, token: str, **kwargs: Any) -> None:
         """
         Start the web server and call the `login method <https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.login>`_.
@@ -201,5 +204,5 @@ class InteractionsApp:
         await self.client.login(token)
         assert self.client.application is not None
 
-        self.verify_key = VerifyKey(bytes.fromhex(self.client.application.verify_key))
+        self._set_verify_key(self.client.application.verify_key)
         await web._run_app(self.app, **kwargs)
