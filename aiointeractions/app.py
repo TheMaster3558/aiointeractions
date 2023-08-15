@@ -31,7 +31,7 @@ from aiohttp import web
 from nacl.exceptions import BadSignatureError
 from nacl.signing import VerifyKey
 
-if discord.utils.HAS_ORJSON:
+if discord.utils.HAS_ORJSON:  # pragma: no cover
     from orjson import dumps, loads
 else:
     from json import dumps, loads
@@ -41,7 +41,7 @@ __all__ = ('InteractionsApp',)
 
 
 # create a prettier repr for the docs, <function <lambda>> -> <do_nothing>
-try:
+try:  # pragma: no cover
     if __sphinx_build__:  # type: ignore # defined in docs/conf.py
 
         class DoNothing:
@@ -173,7 +173,7 @@ class InteractionsApp:
         self.client.dispatch('verified_interaction_request', request)
         data = loads(body)
         if data['type'] == 1:  # ping
-            return web.Response(body=dumps(PONG))
+            return web.Response(text=dumps(PONG))
 
         tasks = asyncio.all_tasks()
         self.client._connection.parse_interaction_create(data)
@@ -182,10 +182,10 @@ class InteractionsApp:
         response = await discord.utils.maybe_coroutine(self.success_response, request)
         return web.Response(status=200, body=response)
 
-    def _set_verify_key(self, verify_key: str) -> None:
+    def _set_verify_key(self, verify_key: str) -> None:  # pragma: no cover
         self.verify_key = VerifyKey(bytes.fromhex(verify_key))
 
-    async def start(self, token: str, **kwargs: Any) -> None:
+    async def start(self, token: str, **kwargs: Any) -> None:  # pragma: no cover
         """
         Start the web server and call the `login method <https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.login>`_.
 
