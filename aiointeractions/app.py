@@ -54,7 +54,15 @@ try:  # pragma: no cover
 except NameError:
     none_function: Callable[[Any], None] = lambda r: None
 
-PONG: Dict[str, int] = {'type': 1}  # pong response
+
+PONG: web.Response
+data = dumps({'type': 1})
+if isinstance(data, bytes):
+    PONG = web.Response(status=200, body=data)
+elif isinstance(data, str):
+    PONG = web.Response(status=200, text=data)
+else:
+    assert False
 
 
 def get_latest_task(before_tasks: Set[asyncio.Task[Any]]) -> asyncio.Task[Any]:
@@ -173,7 +181,7 @@ class InteractionsApp:
         self.client.dispatch('verified_interaction_request', request)
         data = loads(body)
         if data['type'] == 1:  # ping
-            return web.Response(text=dumps(PONG))
+            return PONG
 
         tasks = asyncio.all_tasks()
         self.client._connection.parse_interaction_create(data)
