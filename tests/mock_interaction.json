@@ -1,0 +1,29 @@
+{
+  "type": 2,
+  "token": "interaction_token",
+  "member": {
+    "user": {
+      "id": "1234567890",
+      "username": "FakeUser",
+      "discriminator": "12345",
+      "avatar": null
+    },
+    "roles": [],
+    "permissions": "0",
+    "joined_at": "2020-01-01",
+    "premium_since": null,
+    "deaf": false,
+    "mute": false,
+    "flags": 0
+  },
+  "id": "1234567890",
+  "guild_id": "1234567890",
+  "channel_id": "1234567890",
+  "application_id": "1234567890",
+  "data": {
+    "name": "test_command",
+    "id": "1234567890",
+    "options": []
+  },
+  "version": 1
+}

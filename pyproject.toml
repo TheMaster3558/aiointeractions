@@ -36,7 +36,7 @@ keywords = ["discord"]
 
 [project.optional-dependencies]
 docs = ["sphinxawesome_theme"]
-tests = ["pytest", "pytest-asyncio"]
+tests = ["pytest", "pytest-asyncio", "pytest-aiohttp"]
 
 
 [project.urls]
