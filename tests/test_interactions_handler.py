@@ -1,6 +1,6 @@
 import asyncio
 import json
-from typing import Any, MutableMapping
+from typing import Any, MutableMapping, Tuple
 
 import discord
 import pytest
@@ -13,7 +13,7 @@ with open('tests/mock_interaction.json', 'r') as f:
 
 
 class MockApp(aiointeractions.InteractionsApp):
-    verification: tuple[str, ...] = (json.dumps({'type': 1}), json.dumps(data))
+    verification: Tuple[str, ...] = (json.dumps({'type': 1}), json.dumps(data))
 
     def _verify_request(self, headers: MutableMapping[str, Any], body: str) -> bool:
         return str(body) in self.verification
