@@ -28,7 +28,7 @@ Example
     import aiointeractions
 
     intents = discord.Intents.none()
-    # intents are not required because there is no gateway conenction
+    # intents are not required because there is no gateway connection
 
     client = discord.Client(intents=intents)
     tree = discord.app_commands.CommandTree(client)
@@ -40,12 +40,7 @@ Example
     async def ping(interaction: discord.Interaction) -> None:
         await interaction.response.send_message('Pong!')
 
-    async def main():
-        async with client:
-            await app.start()
-            # your bot will now receive interactions
-
-    asyncio.run(main())
+    app.run('bot token')
 
 
 Fork Support

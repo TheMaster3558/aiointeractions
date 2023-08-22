@@ -24,7 +24,8 @@ DEALINGS IN THE SOFTWARE.
 from __future__ import annotations
 
 import asyncio
-from typing import Any, Callable, Dict, Mapping, Optional, Set
+import warnings
+from typing import Any, AsyncGenerator, Callable, Mapping, Optional, Set
 
 import discord
 from aiohttp import web
@@ -57,11 +58,11 @@ except NameError:
 
 PONG: web.Response
 data = dumps({'type': 1})
-if isinstance(data, bytes):
+if isinstance(data, bytes):  # pragma: no cover
     PONG = web.Response(status=200, body=data)
 elif isinstance(data, str):
     PONG = web.Response(status=200, text=data)
-else:
+else:  # pragma: no cover
     assert False
 
 
@@ -129,8 +130,7 @@ class InteractionsApp:
             app = web.Application()
 
         app.add_routes([web.post(route, self.interactions_handler)])
-        app.on_startup.append(self._set_running)
-        app.on_shutdown.append(self._set_running)
+        app.cleanup_ctx.append(self._set_running)
         self.app: web.Application = app
 
         self.success_response: Callable[[web.Request], Any] = success_response
@@ -139,10 +139,14 @@ class InteractionsApp:
 
         self._running: bool = False
 
-    async def _set_running(self, _: Any) -> None:
-        self._running = not self._running
+    async def _set_running(self, app: web.Application) -> AsyncGenerator[None, None]:
+        self._running = True
 
-    def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:
+        yield
+
+        self._running = False
+
+    def _verify_request(self, headers: Mapping[str, Any], body: str) -> bool:  # pragma: no cover
         signature = headers.get('X-Signature-Ed25519')
         timestamp = headers.get('X-Signature-Timestamp')
 
@@ -193,9 +197,17 @@ class InteractionsApp:
     def _set_verify_key(self, verify_key: str) -> None:  # pragma: no cover
         self.verify_key = VerifyKey(bytes.fromhex(verify_key))
 
+    async def _app_factory(self, token: str) -> web.Application:
+        await self.client.login(token)
+        assert self.client.application is not None
+
+        self._set_verify_key(self.client.application.verify_key)
+        return self.app
+
     async def start(self, token: str, **kwargs: Any) -> None:  # pragma: no cover
         """
         Start the web server and call the `login method <https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.login>`_.
+        This method gives more control over initialization and cleanup than :meth:`run()`.
 
         Parameters
         ----------
@@ -207,10 +219,29 @@ class InteractionsApp:
 
         .. warning::
 
-            You are responsible for closing your bot instance. This library will not do it for you.
+            When using this method, this library will not handle discord client cleanup, event loop cleanup, nor provide a graceful shutdown.
+            It is recommended to use :meth:`run()` instead for simplicity.
         """
-        await self.client.login(token)
-        assert self.client.application is not None
+        warnings.warn(
+            'start() will be deprecated from version 2.0 in favor of using aiohttp\'s own asynchronous startup methods',
+            category=PendingDeprecationWarning,
+        )
+        await web._run_app(self._app_factory(token), **kwargs)
 
-        self._set_verify_key(self.client.application.verify_key)
-        await web._run_app(self.app, **kwargs)
+    def run(self, token: str, **kwargs: Any) -> None:  # pragma: no cover
+        """
+        A top-level blocking call that automatically handles cleanup for the discord client, event loop, and provides a graceful shutdown.
+        This method provides more abstraction than :meth:`start()`.
+
+        Parameters
+        ----------
+        token: :class:`str`
+            The authentication token.
+        \*\*kwargs
+            The keyword arguments to pass onto `aiohttp.web.run_app <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.run_app>`_.
+
+
+        .. versionadded:: 1.3
+        """
+        self.app.on_cleanup.append(lambda _: self.client.close())
+        web.run_app(self._app_factory(token), **kwargs)
