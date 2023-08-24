@@ -197,7 +197,19 @@ class InteractionsApp:
     def _set_verify_key(self, verify_key: str) -> None:  # pragma: no cover
         self.verify_key = VerifyKey(bytes.fromhex(verify_key))
 
-    async def _app_factory(self, token: str) -> web.Application:
+    async def setup(self, token: str) -> web.Application:  # pragma: no cover
+        """
+        Setup the discord client by logging in and fetching the servers verification keys.
+        Call this method if you are using aiohttp's asynchronous startup instead of :meth:`run()`
+
+        Parameters
+        ----------
+        token: :class:`str`
+            The authentication token.
+
+
+        .. versionadded:: 2.0
+        """
         await self.client.login(token)
         assert self.client.application is not None
 
@@ -212,7 +224,7 @@ class InteractionsApp:
         Parameters
         ----------
         token: :class:`str`
-            The authentication token.
+            The authentication token for discord.
         \*\*kwargs
             The keyword arguments to pass onto `aiohttp.web.run_app <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.run_app>`_.
 
@@ -221,22 +233,56 @@ class InteractionsApp:
 
             When using this method, this library will not handle discord client cleanup, event loop cleanup, nor provide a graceful shutdown.
             It is recommended to use :meth:`run()` instead for simplicity.
+
+
+        .. deprecated:: 2.0
+
+            :meth:`start()` will be removed in v2.2. Use aiohttp's asynchronous startup instead.
+            Below is an alternative.
+
+            .. code:: py
+
+                import asyncio
+
+                import aiointeractions
+                from aiohttp import web
+
+                client = discord.Client(...)
+                app = aiointeractions.InteractionsApp(client, ...)
+
+                async def main():
+                    async with client:
+                        await app.setup('token')
+
+                        runner = web.AppRunner(app.app)
+                        await runner.setup()
+                        site = web.TCPSite(runner)
+                        await site.start()
+
+                        try:
+                            while True:
+                                await asyncio.sleep(3600)
+                        finally:
+                            await runner.cleanup()
+
+                asyncio.run(main())
+
         """
         warnings.warn(
-            'start() will be deprecated from version 2.0 in favor of using aiohttp\'s own asynchronous startup methods',
-            category=PendingDeprecationWarning,
+            'start() will be removed in version 2.2 in favor of using aiohttp\'s own asynchronous startup methods',
+            category=DeprecationWarning,
         )
-        await web._run_app(self._app_factory(token), **kwargs)
+        await web._run_app(self.setup(token), **kwargs)
 
     def run(self, token: str, **kwargs: Any) -> None:  # pragma: no cover
         """
         A top-level blocking call that automatically handles cleanup for the discord client, event loop, and provides a graceful shutdown.
-        This method provides more abstraction than :meth:`start()`.
+        This automatically calls :meth:`setup()`.
 
         Parameters
         ----------
         token: :class:`str`
-            The authentication token.
+            The authentication token for discord.
         \*\*kwargs
             The keyword arguments to pass onto `aiohttp.web.run_app <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.run_app>`_.
 
@@ -244,4 +290,4 @@ class InteractionsApp:
         .. versionadded:: 1.3
         """
         self.app.on_cleanup.append(lambda _: self.client.close())
-        web.run_app(self._app_factory(token), **kwargs)
+        web.run_app(self.setup(token), **kwargs)

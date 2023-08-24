@@ -10,3 +10,4 @@ An async Discord HTTP Interactions wrapper for `discord.py`.
   getting_started.rst
   faq.rst
   api.rst
+  changelog.rst
