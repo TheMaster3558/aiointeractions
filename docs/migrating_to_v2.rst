@@ -54,3 +54,8 @@ so it's best to move away from using undocumented methods.
                 await runner.cleanup()
 
     asyncio.run(main())
+
+
+Removal of the ``raise_for_bad_response`` parameter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Now ``aiohttp.web.HTTPUnauthorized`` will always be raised for invalid authentication.

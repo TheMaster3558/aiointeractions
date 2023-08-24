@@ -93,12 +93,11 @@ class InteractionsApp:
         A function (synchronous or asynchronous) that accepts 1 argument,
         `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
         that would return the body for the response. Defaults to a function that would do nothing.
-    raise_for_bad_response: :class:`bool`
-        Whether to raise `aiohttp.web.HTTPException <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.HTTPException>`_
-        on a bad request, if ``False`` returns `aiohttp.web.Response <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Response>`_
-        This parameter will always be ``True`` starting from v2.
 
-        .. versionadded:: 1.2
+
+    .. versionchanged:: 2.0
+
+        Removed the `raise_for_bad_response` parameter and always raise ``aiohttp.web.HTTPUnauthorized``.
 
 
     .. warning::
@@ -120,8 +119,7 @@ class InteractionsApp:
         app: Optional[web.Application] = None,
         route: str = '/interactions',
         success_response: Callable[[web.Request], Any] = none_function,
-        forbidden_response: Callable[[web.Request], Any] = none_function,
-        raise_for_bad_response: bool = False,
+        forbidden_response: Callable[[web.Request], Any] = none_function
     ) -> None:
         self.client: discord.Client = client
         self.verify_key: VerifyKey = discord.utils.MISSING
@@ -135,7 +133,6 @@ class InteractionsApp:
 
         self.success_response: Callable[[web.Request], Any] = success_response
         self.forbidden_response: Callable[[web.Request], Any] = forbidden_response
-        self.raise_for_bad_response: bool = raise_for_bad_response
 
         self._running: bool = False
 
@@ -169,18 +166,13 @@ class InteractionsApp:
         """
         return self._running
 
-    def _handle_unauthorized_request(self, body: Any) -> web.Response:
-        if self.raise_for_bad_response:
-            raise web.HTTPUnauthorized(body=body)
-        return web.Response(status=401, body=body)
-
     async def interactions_handler(self, request: web.Request) -> web.Response:
         self.client.dispatch('interaction_request', request)
         body = await request.text()
 
         if not self._verify_request(request.headers, body):
             response = await discord.utils.maybe_coroutine(self.forbidden_response, request)
-            return self._handle_unauthorized_request(response)
+            raise web.HTTPUnauthorized(body=response)
 
         self.client.dispatch('verified_interaction_request', request)
         data = loads(body)

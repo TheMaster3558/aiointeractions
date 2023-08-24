@@ -32,22 +32,10 @@ async def test_no_verification(aiohttp_client) -> None:
 
 
 @pytest.mark.asyncio
-async def test_invalid_verification(aiohttp_client) -> None:
-    intents = discord.Intents.none()
-    discord_client = discord.Client(intents=intents)
-    app = MockApp(discord_client)
-
-    client = await aiohttp_client(app.app)
-    response = await client.post('/interactions', headers={}, data='badtext')
-
-    assert response.status == 401
-
-
-@pytest.mark.asyncio
 async def test_invalid_verification_exception(aiohttp_client) -> None:
     intents = discord.Intents.none()
     discord_client = discord.Client(intents=intents)
-    app = MockApp(discord_client, raise_for_bad_response=True)
+    app = MockApp(discord_client)
 
     client = await aiohttp_client(app.app)
     response = await client.post('/interactions', headers={}, data='badtext')
