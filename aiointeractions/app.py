@@ -119,7 +119,7 @@ class InteractionsApp:
         app: Optional[web.Application] = None,
         route: str = '/interactions',
         success_response: Callable[[web.Request], Any] = none_function,
-        forbidden_response: Callable[[web.Request], Any] = none_function
+        forbidden_response: Callable[[web.Request], Any] = none_function,
     ) -> None:
         self.client: discord.Client = client
         self.verify_key: VerifyKey = discord.utils.MISSING
@@ -286,6 +286,7 @@ class InteractionsApp:
 
             :meth:`setup()` is called after the web server is started, instead of before.
         """
+
         @self.app.cleanup_ctx.append
         async def manage_discord_client(app: web.Application) -> None:
             await self.setup(token)
