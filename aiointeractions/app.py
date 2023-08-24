@@ -189,7 +189,7 @@ class InteractionsApp:
     def _set_verify_key(self, verify_key: str) -> None:  # pragma: no cover
         self.verify_key = VerifyKey(bytes.fromhex(verify_key))
 
-    async def setup(self, token: str) -> web.Application:  # pragma: no cover
+    async def setup(self, token: str) -> None:  # pragma: no cover
         """
         Setup the discord client by logging in and fetching the servers verification keys.
         Call this method if you are using aiohttp's asynchronous startup instead of :meth:`run()`
@@ -206,7 +206,6 @@ class InteractionsApp:
         assert self.client.application is not None
 
         self._set_verify_key(self.client.application.verify_key)
-        return self.app
 
     async def start(self, token: str, **kwargs: Any) -> None:  # pragma: no cover
         """
@@ -264,12 +263,13 @@ class InteractionsApp:
             'start() will be removed in version 2.2 in favor of using aiohttp\'s own asynchronous startup methods',
             category=DeprecationWarning,
         )
-        await web._run_app(self.setup(token), **kwargs)
+        await self.setup(token)
+        await web._run_app(self.app, **kwargs)
 
     def run(self, token: str, **kwargs: Any) -> None:  # pragma: no cover
         """
         A top-level blocking call that automatically handles cleanup for the discord client, event loop, and provides a graceful shutdown.
-        This automatically calls :meth:`setup()`.
+        This automatically calls :meth:`setup()` but note that it is called *after* the web server is started.
 
         Parameters
         ----------
@@ -280,6 +280,18 @@ class InteractionsApp:
 
 
         .. versionadded:: 1.3
+
+
+        .. versionchanged:: 2.0
+
+            :meth:`setup()` is called after the web server is started, instead of before.
         """
-        self.app.on_cleanup.append(lambda _: self.client.close())
-        web.run_app(self.setup(token), **kwargs)
+        @self.app.cleanup_ctx.append
+        async def manage_discord_client(app: web.Application) -> None:
+            await self.setup(token)
+
+            yield
+
+            await self.client.close()
+
+        web.run_app(self.app, **kwargs)

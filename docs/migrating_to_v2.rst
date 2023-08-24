@@ -41,6 +41,11 @@ so it's best to move away from using undocumented methods.
     async def main():
         async with client:
             await app.setup('token')
+            # if you would like to call setup() after the web server is started like app.run()
+            # do this instead of await app.setup('token')
+            #
+            # import functools
+            # app.app.on_startup.append(functools.partial(app.setup, 'token'))
 
             runner = web.AppRunner(app.app)
             await runner.setup()
