@@ -159,7 +159,7 @@ class InteractionsApp:
         """
         Returns
         -------
-        ``True`` if the app is running, otherwise ``False``.
+        ``True`` if the web server is running, otherwise ``False``.
 
 
         .. versionadded:: 1.1
