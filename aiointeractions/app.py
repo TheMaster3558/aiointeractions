@@ -57,11 +57,11 @@ except NameError:
 
 
 PONG: web.Response
-data = dumps({'type': 1})
-if isinstance(data, bytes):  # pragma: no cover
-    PONG = web.Response(status=200, body=data)
-elif isinstance(data, str):
-    PONG = web.Response(status=200, text=data)
+ping_data = dumps({'type': 1})
+if isinstance(ping_data, bytes):  # pragma: no cover
+    PONG = web.Response(status=200, body=ping_data)
+elif isinstance(ping_data, str):
+    PONG = web.Response(status=200, text=ping_data)
 else:  # pragma: no cover
     assert False
 
