@@ -61,6 +61,18 @@ so it's best to move away from using undocumented methods.
     asyncio.run(main())
 
 
-Removal of the ``raise_for_bad_response`` parameter
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Addition of :meth`InteractionsApp.setup()`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This new method logs in the discord client and fetches verification keys.
+This method is automatically called in :meth:`InteractionsApp.run()` so only use it if you are using alternative start methods
+such as the method above.
+
+
+Removal of the ``raise_for_bad_response`` parameter for :class:`InteractionsApp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Now ``aiohttp.web.HTTPUnauthorized`` will always be raised for invalid authentication.
+
+
+Other changes to :class:`InteractionsApp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- The discord client login and the fetching of the verification keys from :meth:`InteractionsApp.setup()` now are called after the web server is started, instead of before.
