@@ -40,20 +40,20 @@ html_static_path = ['_static']
 
 html_theme_options = {
     'light_css_variables': {
-      '--sy-rc-theme': '0, 72, 186',
+        '--sy-rc-theme': '0, 72, 186',
     },
     'dark_css_variables': {
-      '--sy-rc-theme': '225, 191, 0',
+        '--sy-rc-theme': '225, 191, 0',
     },
     'nav_links': [
         {
             'title': 'PyPi',
             'url': 'https://pypi.org/projects/aiointeractions',
-            'summary': 'You can install aiointeractions here!'
+            'summary': 'You can install aiointeractions here!',
         }
     ],
     'github_url': 'https://github.com/TheMaster3558/aiointeractions',
-    'youtube_url': 'https://www.youtube.com/channel/UCEbHD3v3kPmVdlQ74FkUkGw'
+    'youtube_url': 'https://www.youtube.com/channel/UCEbHD3v3kPmVdlQ74FkUkGw',
 }
 
 html_context = {
