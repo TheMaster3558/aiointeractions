@@ -35,7 +35,7 @@ keywords = ["discord"]
 
 
 [project.optional-dependencies]
-docs = ["sphinxawesome_theme"]
+docs = ["shibuya", "sphinx-copybutton", "sphinx-tabs"]
 tests = ["pytest", "pytest-asyncio", "pytest-aiohttp"]
 
 

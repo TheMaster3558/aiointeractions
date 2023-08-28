@@ -3,65 +3,68 @@ Migrating to v2
 
 Deprecation of :meth:`InteractionsApp.start()`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The start() method is being removed in favor of aiohttp's asynchronous start methods.
-The reason behind this is the start() method uses ``aiohttp.web._run_app()`` which is a private method
+The ``start()`` method is being removed in favor of aiohttp's asynchronous start methods.
+The reason behind this is the ``start()`` method uses ``aiohttp.web._run_app()`` which is a private method
 so it's best to move away from using undocumented methods.
 
-**Old**
 
-.. code:: py
+.. tabs::
 
-    import asyncio
+  .. group-tab:: Old
 
-    import aiointeractions
-    from aiohttp import web
+    .. code:: py
 
-    client = discord.Client(...)
-    app = aiointeractions.InteractionsApp(client, ...)
+        import asyncio
 
-    async def main():
-        async with client:
-            await app.start('token')
+        import aiointeractions
+        from aiohttp import web
 
-    asyncio.run(main())
+        client = discord.Client(...)
+        app = aiointeractions.InteractionsApp(client, ...)
 
+        async def main():
+            async with client:
+                await app.start('token')
 
-**New**
-
-.. code:: py
-
-    import asyncio
-
-    import aiointeractions
-    from aiohttp import web
-
-    client = discord.Client(...)
-    app = aiointeractions.InteractionsApp(client, ...)
-
-    async def main():
-        async with client:
-            await app.setup('token')
-            # if you would like to call setup() after the web server is started like app.run()
-            # do this instead of await app.setup('token')
-            #
-            # import functools
-            # app.app.on_startup.append(functools.partial(app.setup, 'token'))
-
-            runner = web.AppRunner(app.app)
-            await runner.setup()
-            site = web.TCPSite(runner)
-            await site.start()
-
-            try:
-                while True:
-                    await asyncio.sleep(3600)
-            finally:
-                await runner.cleanup()
-
-    asyncio.run(main())
+        asyncio.run(main())
 
 
-Addition of :meth`InteractionsApp.setup()`
+  .. group-tab:: New
+
+    .. code:: py
+
+        import asyncio
+
+        import aiointeractions
+        from aiohttp import web
+
+        client = discord.Client(...)
+        app = aiointeractions.InteractionsApp(client, ...)
+
+        async def main():
+            async with client:
+                await app.setup('token')
+                # if you would like to call setup() after the web server is started like app.run()
+                # do this instead of await app.setup('token')
+                #
+                # import functools
+                # app.app.on_startup.append(functools.partial(app.setup, 'token'))
+
+                runner = web.AppRunner(app.app)
+                await runner.setup()
+                site = web.TCPSite(runner)
+                await site.start()
+
+                try:
+                    while True:
+                        await asyncio.sleep(3600)
+                finally:
+                    await runner.cleanup()
+
+        asyncio.run(main())
+
+
+Addition of :meth:`InteractionsApp.setup()`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This new method logs in the discord client and fetches verification keys.
 This method is automatically called in :meth:`InteractionsApp.run()` so only use it if you are using alternative start methods

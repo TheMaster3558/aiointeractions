@@ -26,7 +26,7 @@ release = aiointeractions.__version__
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinxawesome_theme']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx_copybutton', 'sphinx_tabs.tabs']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -35,8 +35,34 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'sphinxawesome_theme'
+html_theme = 'shibuya'
 html_static_path = ['_static']
+
+html_theme_options = {
+    'light_css_variables': {
+      '--sy-rc-theme': '0, 72, 186',
+    },
+    'dark_css_variables': {
+      '--sy-rc-theme': '225, 191, 0',
+    },
+    'nav_links': [
+        {
+            'title': 'PyPi',
+            'url': 'https://pypi.org/projects/aiointeractions',
+            'summary': 'You can install aiointeractions here!'
+        }
+    ],
+    'github_url': 'https://github.com/TheMaster3558/aiointeractions',
+    'youtube_url': 'https://www.youtube.com/channel/UCEbHD3v3kPmVdlQ74FkUkGw'
+}
+
+html_context = {
+    'source_type': 'github',
+    'source_user': 'TheMaster3558',
+    'source_repo': 'aiointeractions',
+}
+
+html_logo = '_static/logo.png'
 
 
 autodoc_typehints = 'none'

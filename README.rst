@@ -4,6 +4,10 @@ aiointeractions
 An async Discord HTTP Interactions wrapper for `discord.py` built with `aiohttp`.
 
 
+.. image:: /docs/_static/logo.png
+  :alt: The aiointeractions logo
+
+
 Documentation
 -------------
 https://aiointeractions.readthedocs.io/

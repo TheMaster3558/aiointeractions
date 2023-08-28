@@ -14,9 +14,20 @@ The only dependency is `discord.py`
 Installing
 ----------
 
-.. code:: shell
 
-    $ pip install aiointeractions
+.. tabs::
+
+  .. group-tab:: Linux/MacOS
+
+    .. code:: shell
+
+        $ python -m pip install -U aiointeractions
+
+  .. group-tab:: Windows
+
+    .. code:: shell
+
+        $ py -m pip install -U aiointeractions
 
 
 Example
