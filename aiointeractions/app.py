@@ -288,7 +288,7 @@ class InteractionsApp:
         """
 
         @self.app.cleanup_ctx.append
-        async def manage_discord_client(app: web.Application) -> None:
+        async def manage_discord_client(app: web.Application) -> AsyncGenerator[None, None]:
             await self.setup(token)
 
             yield
