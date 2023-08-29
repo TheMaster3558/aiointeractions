@@ -85,11 +85,11 @@ class InteractionsApp:
         If not passed, a new web application instance will be created.
     route: :class:`str`
         The route to add the interactions handler to. Defaults to ``/interactions``.
-    success_response: Callable[[web.Request], Any]
+    success_response: Callable[[:class:`web.Request`], Any]
         A function (synchronous or asynchronous) that accepts 1 argument,
         `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
         that would return the body for the response. Defaults to a function that would do nothing.
-    forbidden_response: Callable[[web.Request], Any]
+    forbidden_response: Callable[[:class:`web.Request`], Any]
         A function (synchronous or asynchronous) that accepts 1 argument,
         `request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
         that would return the body for the response. Defaults to a function that would do nothing.
