@@ -186,9 +186,6 @@ class InteractionsApp:
         response = await discord.utils.maybe_coroutine(self.success_response, request)
         return web.Response(status=200, body=response)
 
-    def _set_verify_key(self, verify_key: str) -> None:  # pragma: no cover
-        self.verify_key = VerifyKey(bytes.fromhex(verify_key))
-
     async def setup(self, token: str) -> None:  # pragma: no cover
         """
         Setup the discord client by logging in and fetching the servers verification keys.
@@ -205,7 +202,7 @@ class InteractionsApp:
         await self.client.login(token)
         assert self.client.application is not None
 
-        self._set_verify_key(self.client.application.verify_key)
+        self.verify_key = VerifyKey(bytes.fromhex(self.client.application.verify_key))
 
     async def start(self, token: str, **kwargs: Any) -> None:  # pragma: no cover
         """
