@@ -25,7 +25,7 @@ async def test_no_verification(aiohttp_client) -> None:
     discord_client = discord.Client(intents=intents)
     app = MockApp(discord_client)
 
-    client = await aiohttp_client(app.app)
+    client = await aiohttp_client(app.aiohttp_app)
     response = await client.post('/interactions', headers={}, data='')
 
     assert response.status == 401
@@ -37,7 +37,7 @@ async def test_invalid_verification_exception(aiohttp_client) -> None:
     discord_client = discord.Client(intents=intents)
     app = MockApp(discord_client)
 
-    client = await aiohttp_client(app.app)
+    client = await aiohttp_client(app.aiohttp_app)
     response = await client.post('/interactions', headers={}, data='badtext')
 
     assert response.status == 401
@@ -49,7 +49,7 @@ async def test_valid_verification_ping(aiohttp_client) -> None:
     discord_client = discord.Client(intents=intents)
     app = MockApp(discord_client)
 
-    client = await aiohttp_client(app.app)
+    client = await aiohttp_client(app.aiohttp_app)
     response = await client.post('/interactions', headers={}, json={'type': 1})
 
     assert response.status == 200 and json.loads(await response.text())['type'] == 1
@@ -71,7 +71,7 @@ async def test_command(aiohttp_client) -> None:
         nonlocal changed
         changed = True
 
-    client = await aiohttp_client(app.app)
+    client = await aiohttp_client(app.aiohttp_app)
     await client.post('/interactions', headers={}, json=data)
 
     assert changed is True
@@ -88,9 +88,9 @@ async def test_success_response(aiohttp_client) -> None:
 
     @tree.command()
     async def test_command(interaction: discord.Interaction) -> None:
-        print('The Master is cool')
+        ...
 
-    client = await aiohttp_client(app.app)
+    client = await aiohttp_client(app.aiohttp_app)
     response = await client.post('/interactions', headers={}, json=data)
 
     assert response.status == 200 and await response.text() == 'The Master is cool'

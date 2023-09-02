@@ -50,7 +50,7 @@ so it's best to move away from using undocumented methods.
                 # import functools
                 # app.app.on_startup.append(functools.partial(app.setup, 'token'))
 
-                runner = web.AppRunner(app.app)
+                runner = web.AppRunner(app.aiohttp_app)
                 await runner.setup()
                 site = web.TCPSite(runner)
                 await site.start()
@@ -65,7 +65,7 @@ so it's best to move away from using undocumented methods.
 
 
 Addition of :meth:`InteractionsApp.setup()`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This new method logs in the discord client and fetches verification keys.
 This method is automatically called in :meth:`InteractionsApp.run()` so only use it if you are using alternative start methods
 such as the method above.
@@ -74,6 +74,19 @@ such as the method above.
 Removal of the ``raise_for_bad_response`` parameter for :class:`InteractionsApp`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Now ``aiohttp.web.HTTPUnauthorized`` will always be raised for invalid authentication.
+
+
+
+Rename ``InteractionsApp.app`` to ``aiohttp_app``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Both the parameter ``app`` for the constructor and the attribute ``app`` have been renamed to ``aiohttp_app``.
+The goal of this is to add distinction in scenarios such as this.
+
+.. code:: py
+
+    app = aiointeractions.InteractionsApp()
+    print('The aiohttp app is', app.app)
+                                ^^^^^^^
 
 
 Other changes to :class:`InteractionsApp`

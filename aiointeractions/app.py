@@ -80,9 +80,14 @@ class InteractionsApp:
     client: :class:`discord.Client`
         The discord.py client instance for the web application to use. This can be :class:`discord.Client`
         or any subclass of it such as :class:`discord.ext.commands.Bot`
-    app: Optional[:class:`aiohttp.web.Application`]
+    aiohttp_app: Optional[:class:`aiohttp.web.Application`]
         A pre-existing web application to add the interactions route to.
         If not passed, a new web application instance will be created.
+
+        .. versionchanged:: 2.0
+
+            Renamed from `app` to `aiohttp_app` to add more distinction.
+
     route: :class:`str`
         The route to add the interactions handler to. Defaults to ``/interactions``.
     success_response: Callable[[:class:`web.Request`], Any]
@@ -116,7 +121,7 @@ class InteractionsApp:
         self,
         client: discord.Client,
         *,
-        app: Optional[web.Application] = None,
+        aiohttp_app: Optional[web.Application] = None,
         route: str = '/interactions',
         success_response: Callable[[web.Request], Any] = none_function,
         forbidden_response: Callable[[web.Request], Any] = none_function,
@@ -124,19 +129,19 @@ class InteractionsApp:
         self.client: discord.Client = client
         self.verify_key: VerifyKey = discord.utils.MISSING
 
-        if app is None:
-            app = web.Application()
+        if aiohttp_app is None:
+            aiohttp_app = web.Application()
 
-        app.add_routes([web.post(route, self.interactions_handler)])
-        app.cleanup_ctx.append(self._set_running)
-        self.app: web.Application = app
+        aiohttp_app.add_routes([web.post(route, self.interactions_handler)])
+        aiohttp_app.cleanup_ctx.append(self._set_running)
+        self.aiohttp_app: web.Application = aiohttp_app
 
         self.success_response: Callable[[web.Request], Any] = success_response
         self.forbidden_response: Callable[[web.Request], Any] = forbidden_response
 
         self._running: bool = False
 
-    async def _set_running(self, app: web.Application) -> AsyncGenerator[None, None]:
+    async def _set_running(self, aiohttp_app: web.Application) -> AsyncGenerator[None, None]:
         self._running = True
 
         yield
@@ -261,7 +266,7 @@ class InteractionsApp:
             category=DeprecationWarning,
         )
         await self.setup(token)
-        await web._run_app(self.app, **kwargs)
+        await web._run_app(self.aiohttp_app, **kwargs)
 
     def run(self, token: str, **kwargs: Any) -> None:  # pragma: no cover
         """
@@ -284,7 +289,7 @@ class InteractionsApp:
             :meth:`setup()` is called after the web server is started, instead of before.
         """
 
-        @self.app.cleanup_ctx.append
+        @self.aiohttp_app.cleanup_ctx.append
         async def manage_discord_client(app: web.Application) -> AsyncGenerator[None, None]:
             await self.setup(token)
 
@@ -292,4 +297,4 @@ class InteractionsApp:
 
             await self.client.close()
 
-        web.run_app(self.app, **kwargs)
+        web.run_app(self.aiohttp_app, **kwargs)
