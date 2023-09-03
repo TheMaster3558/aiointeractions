@@ -115,6 +115,23 @@ class InteractionsApp:
 
         You can use `discord.utils.setup_logging() <https://discordpy.readthedocs.io/en/stable/api.html#discord.utils.setup_logging>`_
         for basic logging. Use ``discord.utils.setup_logging(root=False)`` to disable logging for `aiohttp`.
+
+
+    Attributes
+    ----------
+    client: :class:`discord.Client`
+        The discord.py client instance currently being used.
+    aiohttp_app: Optional[:class:`aiohttp.web.Application`]
+        The instance of :class:`aiohttp.web.Application` currently being used.
+
+        .. versionchanged:: 2.0
+
+            Renamed from `app` to `aiohttp_app` to add more distinction.
+
+    success_response: Callable[[:class:`web.Request`], Any]
+        The current success response function.
+    forbidden_response: Callable[[:class:`web.Request`], Any]
+        The current forbidden response function.
     """
 
     def __init__(

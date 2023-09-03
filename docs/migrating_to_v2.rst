@@ -79,7 +79,7 @@ Now ``aiohttp.web.HTTPUnauthorized`` will always be raised for invalid authentic
 
 Rename ``InteractionsApp.app`` to ``aiohttp_app``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Both the parameter ``app`` for the constructor of :class:`aiohttp.InteractionsApp` and the attribute ``app`` have been renamed to ``aiohttp_app``.
+Both the parameter ``app`` for the constructor of :class:`InteractionsApp` and the attribute ``app`` have been renamed to ``aiohttp_app``.
 The goal of this is to add distinction in scenarios such as this.
 
 .. code:: py
