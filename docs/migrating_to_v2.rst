@@ -1,6 +1,8 @@
 Migrating to v2
 ===============
 
+.. currentmodule:: aiointeractions
+
 Deprecation of :meth:`InteractionsApp.start()`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The ``start()`` method is being removed in favor of aiohttp's asynchronous start methods.
