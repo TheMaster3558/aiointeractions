@@ -35,8 +35,8 @@ keywords = ["discord"]
 
 
 [project.optional-dependencies]
-docs = ["shibuya", "sphinx-copybutton", "sphinx-tabs"]
-tests = ["pytest", "pytest-asyncio", "pytest-aiohttp"]
+docs = ["shibuya>=2024.0", "sphinx-copybutton>=0.5", "sphinx-tabs>=3.0"]
+tests = ["pytest>=7.0", "pytest-asyncio>=0.23", "pytest-aiohttp>=1.0"]
 
 
 [project.urls]
