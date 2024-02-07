@@ -87,8 +87,7 @@ async def test_success_response(aiohttp_client) -> None:
     tree = app_commands.CommandTree(discord_client)
 
     @tree.command()
-    async def test_command(interaction: discord.Interaction) -> None:
-        ...
+    async def test_command(interaction: discord.Interaction) -> None: ...
 
     client = await aiohttp_client(app.aiohttp_app)
     response = await client.post('/interactions', headers={}, json=data)
