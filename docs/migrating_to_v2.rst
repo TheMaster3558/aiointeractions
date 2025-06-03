@@ -50,7 +50,7 @@ so it's best to move away from using undocumented methods.
                 # do this instead of await app.setup('token')
                 #
                 # import functools
-                # app.app.on_startup.append(functools.partial(app.setup, 'token'))
+                # app.aiohttp_app.on_startup.append(functools.partial(app.setup, 'token'))
 
                 runner = web.AppRunner(app.aiohttp_app)
                 await runner.setup()
