@@ -33,10 +33,7 @@ from aiohttp import web
 from nacl.exceptions import BadSignatureError
 from nacl.signing import VerifyKey
 
-if discord.utils.HAS_ORJSON:  # pragma: no cover
-    from orjson import dumps, loads
-else:
-    from json import dumps, loads
+from json import dumps, loads
 
 
 __all__ = ('InteractionsApp',)
@@ -58,13 +55,7 @@ except NameError:
 
 
 PONG: web.Response
-ping_data = dumps({'type': 1})
-if isinstance(ping_data, bytes):  # pragma: no cover
-    PONG = web.Response(status=200, body=ping_data)
-elif isinstance(ping_data, str):
-    PONG = web.Response(status=200, text=ping_data)
-else:  # pragma: no cover
-    assert False
+ping_data = PONG = web.Response(status=200, text=dumps({'type': 1}))
 
 
 def get_latest_task(before_tasks: Set[asyncio.Task[Any]]) -> asyncio.Task[Any]:
