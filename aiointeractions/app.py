@@ -54,8 +54,7 @@ except NameError:
     none_function: Callable[[Any], None] = lambda r: None
 
 
-PONG: web.Response
-ping_data = PONG = web.Response(status=200, text=dumps({'type': 1}))
+PONG = web.Response(status=200, text=dumps({'type': 1}))
 
 
 def get_latest_task(before_tasks: Set[asyncio.Task[Any]]) -> asyncio.Task[Any]:
