@@ -39,12 +39,7 @@ html_theme = 'shibuya'
 html_static_path = ['_static']
 
 html_theme_options = {
-    'light_css_variables': {
-        '--sy-rc-theme': '0, 72, 186',
-    },
-    'dark_css_variables': {
-        '--sy-rc-theme': '225, 191, 0',
-    },
+    'accent_color': 'yellow',
     'nav_links': [
         {
             'title': 'PyPi',

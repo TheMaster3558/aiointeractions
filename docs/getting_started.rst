@@ -8,7 +8,11 @@ Python 3.8 or newer is required.
 
 Dependencies
 ------------
-The only dependency is `discord.py`. However, `discord.py` versions from `v2.4` are no longer compatible with the library.
+The only dependency is `discord.py`.
+
+.. warning::
+
+    ``discord.py`` versions from v2.4 are no longer compatible with the library
 
 
 Installing
