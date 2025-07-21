@@ -4,6 +4,9 @@ aiointeractions
 An async Discord HTTP Interactions wrapper for `discord.py` built with `aiohttp`.
 
 
+⚠️ **Warning:** This library is no longer compatible with **discord.py>2.4** due to changes in how interactions are parsed
+
+
 .. image:: /docs/_static/logo.png
   :alt: The aiointeractions logo
 
