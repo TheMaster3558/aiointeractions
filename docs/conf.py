@@ -50,7 +50,7 @@ html_theme_options = {
     ],
     'github_url': 'https://github.com/TheMaster3558/aiointeractions',
     'youtube_url': 'https://www.youtube.com/channel/UCEbHD3v3kPmVdlQ74FkUkGw',
-    'page_layout': 'default'
+    'page_layout': 'default',
 }
 
 html_context = {
