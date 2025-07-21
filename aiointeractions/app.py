@@ -238,10 +238,12 @@ class InteractionsApp:
 
         .. deprecated:: 2.0
 
-            :meth:`start()` will be removed in v2.2. Use aiohttp's asynchronous startup instead.
+            :meth:`start()` will be removed in v3 (if this project makes it that far). Use aiohttp's asynchronous startup instead.
             Below is an alternative.
 
-            .. code:: py
+            .. code-block:: py
+                :linenos:
+                :caption: main.py
 
                 import asyncio
 

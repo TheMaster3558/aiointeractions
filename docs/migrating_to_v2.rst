@@ -14,7 +14,9 @@ so it's best to move away from using undocumented methods.
 
   .. group-tab:: Old
 
-    .. code:: py
+    .. code-block:: py
+        :linenos:
+        :emphasize-lines: 11
 
         import asyncio
 
@@ -33,7 +35,9 @@ so it's best to move away from using undocumented methods.
 
   .. group-tab:: New
 
-    .. code:: py
+    .. code-block:: py
+        :linenos:
+        :emphasize-lines: 11-27
 
         import asyncio
 
@@ -84,12 +88,12 @@ Rename ``InteractionsApp.app`` to ``aiohttp_app``
 Both the parameter ``app`` for the constructor of :class:`InteractionsApp` and the attribute ``app`` have been renamed to ``aiohttp_app``.
 The goal of this is to add distinction in scenarios such as this.
 
-.. code:: py
+.. code-block:: py
+    :linenos:
 
     app = aiointeractions.InteractionsApp()
     print('The aiohttp app is', app.app)
                                 ^^^^^^^
-
 
 Other changes to :class:`InteractionsApp`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -40,15 +40,17 @@ html_static_path = ['_static']
 
 html_theme_options = {
     'accent_color': 'yellow',
+    'announcement': 'aiointeractions is no longer compatible with discord.py starting from discord.py v2.4',
     'nav_links': [
         {
             'title': 'PyPi',
-            'url': 'https://pypi.org/projects/aiointeractions',
+            'url': 'https://pypi.org/project/aiointeractions',
             'summary': 'You can install aiointeractions here!',
         }
     ],
     'github_url': 'https://github.com/TheMaster3558/aiointeractions',
     'youtube_url': 'https://www.youtube.com/channel/UCEbHD3v3kPmVdlQ74FkUkGw',
+    'page_layout': 'default'
 }
 
 html_context = {

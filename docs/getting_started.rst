@@ -23,13 +23,13 @@ Installing
 
   .. group-tab:: Linux/MacOS
 
-    .. code:: shell
+    .. code-block:: shell
 
         $ python -m pip install -U aiointeractions
 
   .. group-tab:: Windows
 
-    .. code:: shell
+    .. code-block:: shell
 
         $ py -m pip install -U aiointeractions
 
@@ -37,7 +37,9 @@ Installing
 Example
 -------
 
-.. code:: py
+.. code-block:: py
+    :linenos:
+    :caption: main.py
 
     import asyncio
     import discord

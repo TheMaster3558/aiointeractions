@@ -27,4 +27,8 @@ You can listen to the following events on your client instance.
     Called when a request to the interactions endpoint has been received
     and it has been verified.
 
-    The parameters are the same as :func:`on_interaction_request`.
+    :param request: The request object.
+    :type request: `aiohttp.web.Request <https://docs.aiohttp.org/en/stable/web_reference.html#aiohttp.web.Request>`_
+
+    .. note:: The request may not be an interaction, it may be a ping from Discord.
+
